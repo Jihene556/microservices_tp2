@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  todo-lists-persistance:
+    build:
+      context: ./todoLists-persistance
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Exposed backend API on port 3000
+    networks:
+      - todo-network
+    environment:
+      NODE_ENV: development
+    volumes:
+      - todo-db:/app/db  # Volume Docker anonyme pour Windows
+
+  todolists-frontend:
+    build:
+      context: ./todolists-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3006:3006"
+    networks:
+      - todo-network
+    depends_on:
+      - todo-lists-persistance
+    # Ajoutez une logique pour vérifier que le backend est prêt avant de démarrer le frontend
+
+networks:
+  todo-network:
+    driver: bridge
+
+volumes:
+  todo-db:
